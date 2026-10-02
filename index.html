@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Before / After</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;min-height:100%;background:transparent}
+.slider{
+  position:relative;width:100%;overflow:hidden;cursor:ew-resize;
+  touch-action:none;user-select:none;-webkit-user-select:none;
+}
+.slider > img{display:block;width:100%;height:auto}
+.after{
+  position:absolute;top:0;left:0;height:100%;width:50%;overflow:hidden;
+}
+.after img{
+  display:block;height:100%;width:auto;max-width:none;
+}
+.handle{
+  position:absolute;top:0;bottom:0;left:50%;width:2px;
+  background:#fff;box-shadow:0 0 4px rgba(0,0,0,.25);
+  transform:translateX(-50%);pointer-events:none;
+}
+.handle::after{
+  content:"↔";position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:38px;height:38px;border-radius:50%;
+  background:#fff;color:#111;display:flex;align-items:center;
+  justify-content:center;font:18px/1 Arial,sans-serif;
+  box-shadow:0 1px 6px rgba(0,0,0,.2);
+}
+</style>
+</head>
+<body>
+<div class="slider" id="slider" aria-label="Before and after image comparison">
+  <img src="before.jpg" alt="Before">
+  <div class="after" id="after"><img src="after.jpg" alt="After"></div>
+  <div class="handle" id="handle"></div>
+</div>
+<script>
+const slider=document.getElementById("slider");
+const after=document.getElementById("after");
+const handle=document.getElementById("handle");
+
+function move(clientX){
+  const r=slider.getBoundingClientRect();
+  let p=((clientX-r.left)/r.width)*100;
+  p=Math.max(0,Math.min(100,p));
+  after.style.width=p+"%";
+  handle.style.left=p+"%";
+}
+slider.addEventListener("pointerdown",e=>{
+  slider.setPointerCapture(e.pointerId);
+  move(e.clientX);
+});
+slider.addEventListener("pointermove",e=>{
+  if(e.buttons || e.pressure) move(e.clientX);
+});
+</script>
+</body>
+</html>
